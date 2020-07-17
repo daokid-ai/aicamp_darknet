@@ -66,7 +66,7 @@ def transfer_data(from_loc, to_loc, list_files):
 def create_img_list(prefix_path, path_to_data, relative_path, file_nm):
     list_jpgs = sorted(img_file for img_file in os.listdir(path_to_data) if img_file.endswith(".jpg"))
     list_jpgs = [os.path.join(relative_path, img_file) for img_file in list_jpgs]
-    with open(file_nm, "w") as f:
+    with open(os.path.join(prefix_path, file_nm), "w") as f:
         f.write("\n".join(list_jpgs))
 
 

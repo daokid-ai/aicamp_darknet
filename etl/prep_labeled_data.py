@@ -104,12 +104,12 @@ def main():
 
     total_rows = len(df.index) 
     print(f"There are a total of {total_rows} images to process.")
-    total_rows = 40
+    total_rows = 50
     
     for idx in range(0, total_rows):
-    
+        
         json_acceptable_string = df.loc[idx, "Label"]
-
+        
         label_info = json.loads(json_acceptable_string)        
         if not label_info: # the Label has only {}
             print(f"EXCEPTION: There is no label for this image @ index: {idx} ==> Skipping training image.")

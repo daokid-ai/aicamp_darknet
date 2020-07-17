@@ -1,0 +1,1 @@
+#folder for downloading images from bing api

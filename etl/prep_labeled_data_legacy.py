@@ -100,7 +100,7 @@ def main():
 
     total_rows = len(df.index) 
     print(f"There are a total of {total_rows} images to process.")
-    total_rows = 10
+    total_rows = 50
     
     for idx in range(0, total_rows):
     

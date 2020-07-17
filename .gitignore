@@ -3,10 +3,11 @@
 .DS_store
 
 # Visual Studio Code files
-yolo3.code-workspace
+yolov3.code-workspace
 
 # key files
-keys/*
+keys/*.key
+keys/Icon
 
 # media files
 *.avi
@@ -18,17 +19,11 @@ lib/
 share/
 pyvenv.cfg
 
-#Debug folders
-test_images/
-
 #Prep Data items
-etl/data_collection/
-etl/data_for_test/
-etl/data_for_train/
 etl/currency_lblbx_data.csv
 
 #Model Eval items -- Not Ready
 model_eval
 
 # Weights files
-yolov3_config/*.weights
+config/*.weights
