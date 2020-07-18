@@ -1,4 +1,4 @@
-# created by virtualenv automatically
+
 # Mac OSX Files
 .DS_store
 
@@ -7,7 +7,7 @@ yolov3.code-workspace
 
 # key files
 keys/*.key
-keys/Icon
+keys/Icon?
 
 # media files
 *.avi
@@ -18,12 +18,15 @@ etc/
 lib/
 share/
 pyvenv.cfg
+.Python
 
 #Prep Data items
+etl/rockfish_lblbx_data.csv
 etl/currency_lblbx_data.csv
 
 #Model Eval items -- Not Ready
-model_eval
+model_eval/draft/
+model_eval/__pycache__/
 
 # Weights files
 config/*.weights

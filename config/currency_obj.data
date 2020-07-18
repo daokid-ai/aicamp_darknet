@@ -1,0 +1,5 @@
+classes= 4
+train = currency_train.txt
+valid = currency_valid.txt
+names = currency_obj.names
+backup = backup/
