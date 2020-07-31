@@ -48,7 +48,6 @@ def get_list_of_img_urls(search_item, search_url, headers, max_images):
     while img_index <= max_images:
         # request to the bing search api, the max imgs per request is 150 so it is looped
         params = {'q': search_item, 'count': 150, 'imageType': 'photo', 'offset': img_index}
-
         r = requests.get( search_url, headers=headers, params=params, timeout=30)
         r.raise_for_status()
         search_results = r.json()
@@ -59,7 +58,7 @@ def get_list_of_img_urls(search_item, search_url, headers, max_images):
 
 
 # save a list of images from image urls
-def save_list_of_images(img_urls, folder_name):
+def download_images(img_urls, folder_name):
     for i, contentUrl in enumerate(img_urls):
         try:
             image_data = requests.get(contentUrl, timeout=10)
@@ -70,9 +69,10 @@ def save_list_of_images(img_urls, folder_name):
                 print(f"[INFO] skipping: {contentUrl}")
                 continue
             print(f"Unhandled exception while opening image. Exception: {e}")
-        ext = image.format
-        if ext == 'JPEG': ext =' jpg'
-        img_filenm = str(i).zfill(5) + f".{ext}"
+        ext = '.otr'
+        if image.format == 'JPEG': ext ='.jpg'
+        if image.format == 'PNG': ext ='.png'
+        img_filenm = str(i).zfill(5) + ext
         image.save(os.path.join(folder_name, img_filenm), image.format)
         print(f"{i} downloaded from {contentUrl} to {img_filenm}") 
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     #Setup initial parameters for search
     subscription_key = readkey_fromfile(apikey_file)
     headers = {'Ocp-Apim-Subscription-Key': subscription_key}
-    search_item = 'masks'
+    search_item = 'food'
     
     # making the folder to store the images
     if not os.path.exists(os.path.dirname(folder_name)):
@@ -98,5 +98,5 @@ if __name__ == "__main__":
     img_urls = get_list_of_img_urls(search_item, search_url, headers, max_images)
 
     # Save list of images
-    save_list_of_images(img_urls, folder_name)
+    download_images(img_urls, folder_name)
     print(f"----------------------- End of program execution --------------------------")
