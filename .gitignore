@@ -30,3 +30,4 @@ model_eval/__pycache__/
 
 # Weights files
 config/*.weights
+config/previous_weights/
