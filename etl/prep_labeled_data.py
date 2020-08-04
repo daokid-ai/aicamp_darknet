@@ -52,9 +52,9 @@ def get_img_dims(path_to_data, img_filenm):
 def get_yolo_label(a_box, img_dims):
     dw = 1./img_dims.get("img_width")
     dh = 1./img_dims.get("img_height")
-    center_x = dw * (a_box['left'] + a_box['width'])/2.0
+    center_x = dw * (a_box['left'] + a_box['width']/2.0)
     #print(f"Left position: {a_box['left']} + label width: {a_box['width']} = {a_box['left'] + a_box['width']} ==> center_x :{(a_box['left'] + a_box['width'])/2.0}" )
-    center_y = dh * (a_box['top'] + a_box['height'])/2.0
+    center_y = dh * (a_box['top'] + a_box['height']/2.0)
     #print(f"Top position: {a_box['top']} + label height: {a_box['height']} = {a_box['top'] + a_box['height']} ==> center_y :{(a_box['top'] + a_box['height'])/2.0}" )
     rel_width = dw * a_box['width']  
     rel_height = dh * a_box['height']
