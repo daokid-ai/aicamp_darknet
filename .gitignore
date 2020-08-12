@@ -21,8 +21,7 @@ pyvenv.cfg
 .Python
 
 #Prep Data items
-etl/rockfish_lblbx_data.csv
-etl/currency_lblbx_data.csv
+etl/*.csv
 
 #Model Eval items -- Not Ready
 model_eval/draft/
@@ -31,3 +30,11 @@ model_eval/__pycache__/
 # Weights files
 config/*.weights
 config/previous_weights/
+
+# Data for Training, Testing, Validating
+data_for_test/*.txt
+data_for_test/*.jpg
+data_for_train/*.txt
+data_for_train/*.jpg
+data_for_valid/*.txt
+data_for_valid/*.jpg
