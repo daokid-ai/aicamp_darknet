@@ -31,10 +31,5 @@ model_eval/__pycache__/
 config/*.weights
 config/previous_weights/
 
-# Data for Training, Testing, Validating
-data_for_test/*.txt
-data_for_test/*.jpg
-data_for_train/*.txt
-data_for_train/*.jpg
-data_for_valid/*.txt
-data_for_valid/*.jpg
+#Labelbox project labeled csv
+config/*.csv

@@ -263,23 +263,66 @@ def display_conf_matrix(conf_matrix, label_list):
     """
     Use matplotlib to display the confusion matrix.
     """
-    #rcParams.update({'figure.autolayout': True})
-    #np.set_printoptions(precision=2)
-    #np.random.seed(42)
-    #COLORS = np.random.randint(0, 255, size=(len(label_list), 3), dtype='uint8')
     print(f"label_list = {label_list}")
     matrix_display = ConfusionMatrixDisplay(conf_matrix, display_labels=label_list)
     matrix_display.plot()
     plt.show()
 
 
-def evaluate_model(label_list, image_folder_root, cfg_path, weight_path, iou_threshold, confidence_level, normalize):
+def plot_confusion_matrix(cm, classes, title='confusion matrix',
+                          cmap=plt.cm.rainbow, output_file='confusion_matrix.jpg'):
+    '''take confusion matrix, plot it, and save it to file
+    '''
+    print(type(cm[0, 0]))
+    if isinstance(cm[0, 0], np.integer):
+        fmt = 'd'
+    else:
+        fmt = '.2f'
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+    ax.figure.colorbar(im, ax=ax)
+    # We want to show all ticks...
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=classes, yticklabels=classes,
+           title=title,
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+    # Loop over data dimensions and create text annotations.
+    thresh = cm.max() / 2.
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(j, i, format(cm[i, j], fmt),
+                    ha="center", va="center",
+                    color="white" if cm[i, j] < thresh else "black", size=12)
+    fig.tight_layout()
+    plt.autoscale()
+    plt.savefig(output_file, bbox_inches="tight")
+    return ax
+
+
+
+def evaluate_model(label_list, image_folder_root, cfg_path, weight_path, iou_threshold, confidence_level):
     # calls all the other functions
     results = get_prediction(image_folder_root, label_list, cfg_path, weight_path, confidence_level)
     data = clean_scores(results, iou_threshold)
-    conf_matrix = get_conf_matrix(data, normalize)
-    display_conf_matrix(conf_matrix, label_list)
+    
+    # get confusion matrix not normalized
+    conf_matrix = get_conf_matrix(data, normalize = None)
+    #display_conf_matrix(conf_matrix, label_list)
+    plot_confusion_matrix(conf_matrix, label_list, title='confusion matrix without nomalizaton',
+                              cmap=plt.cm.rainbow, output_file='confusion_matrix.jpg')
 
+    # get confusion matrix normalized
+    conf_matrix = get_conf_matrix(data, normalize = 'true')
+    #display_conf_matrix(conf_matrix, label_list)
+    plot_confusion_matrix(conf_matrix, label_list, title='normalized confusion matrix',
+                              cmap=plt.cm.rainbow, output_file='normalized_confusion_matrix.jpg')
 
 if __name__ == "__main__":
     try:
@@ -295,8 +338,7 @@ if __name__ == "__main__":
                         cfg.get('config_path'),
                         cfg.get('weights_path'),
                         float(cfg.get('iou_threshold')),
-                        float(cfg.get('confidence_lvl')),
-                        normalize = 'true'
+                        float(cfg.get('confidence_lvl'))
                         )
         
     except Exception as e:
