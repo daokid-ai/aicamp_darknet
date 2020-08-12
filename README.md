@@ -23,7 +23,7 @@ Contains python script to evaluate trained model
 3. Run dl_bingAPI_images.py to grab images using Azure cognitive services for images
 4. Run dl_labels_tocsv.py to grab label info from Labelbox.com
 5. Run prep_labeled_data.py to prepare labeled data and images for yolo format
-6. Run prep_stage_data.py to split data into train set, valid set, and test set (80/10/10) 
+6. Run split_stage_data.py to split data into train set, valid set, and test set (80/10/10) 
 7. To train configure and Setup your yolov3.cfg, obj.names, and obj.data, and download darknet53.conv.74 weights 
 8. Run in command line interface: ./darknet detector train name_of_your_obj.data name_of_your_yolov3.cfg darknet53.conv.74 -dont_show -map
     a. -dont_show hides detailed errors from output

@@ -107,7 +107,8 @@ def main():
     lblbxdict_key = 'objects'
 
     # List the different categories in the labels here
-    object_list = {'spoiled': 0, 'edible' : 1, 'hard_to_tell' : 2}
+    object_list = {'euro' : 0, 'dollar' : 1, 'renminbi' : 2, 'pound' : 3}
+    #object_list = {'spoiled': 0, 'edible' : 1, 'hard_to_tell' : 2}
 
     # create directory to store the image and text files
     try:
@@ -123,7 +124,7 @@ def main():
 
     total_rows = len(df.index) 
     print(f"There are a total of {total_rows} images to process.")
-    #total_rows = 10
+    total_rows = 500
     
     for idx in range(0, total_rows):
         
