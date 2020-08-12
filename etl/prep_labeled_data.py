@@ -6,7 +6,8 @@ import pandas as pd
 import requests 
 import traceback
 from PIL import Image
-
+from io import BytesIO
+from requests import exceptions
 
 # Read in configurations from properties file
 def set_configuration(prop_file):
@@ -27,14 +28,21 @@ def set_configuration(prop_file):
 def dl_img(path_to_data, prefix_filenm, image_url, idx):
     try:
         print(f"Downloading: {image_url}")
-        response_img = requests.get(image_url)
-        if not response_img:
+        image_data = requests.get(image_url, timeout = 10)
+        image_data.raise_for_status()
+        if not image_data:
             return "skip"
+        image = Image.open(BytesIO(image_data.content))
         
-        img_filenm = prefix_filenm + str(idx).zfill(5) + ".jpg"
-        with open(os.path.join(path_to_data, img_filenm),'wb') as img_file:
-            img_file.write(response_img.content)
-            print(f"Saved image at this location: {os.path.join(path_to_data, img_filenm)}")
+        ext =".jpg"
+        if (image.format == 'JPEG'): ext = ".jpg"
+        if (image.format == 'PNG'): ext = ".png"
+        if (image.format == 'GIF'): ext = ".gif"
+
+        img_filenm = prefix_filenm + str(idx).zfill(5) + ext
+        file_path = os.path.join(path_to_data, img_filenm) 
+        image.save(file_path)
+        print(f"Saved image at this location: {os.path.join(path_to_data, img_filenm)}")
         return img_filenm
     except:
         return "skip"
@@ -78,6 +86,8 @@ def write_labels(label_info, lblbxdict_key, object_list, text, img_dims):
             print(f"Uknown object labeled. Check object list if it needs updating.")
         '''
         classification = lbl_dict.get("title")
+        if classification == 'hard_to_tell': # class to skip adding.
+            continue
         class_num = object_list.get(classification)
         a_box = lbl_dict.get("bbox")
         #yolo_info = get_yolo_label(**a_box, **img_dims) use if breaking out values
@@ -97,14 +107,23 @@ def main():
     lblbxdict_key = 'objects'
 
     # List the different categories in the labels here
-    object_list = {'euro': 0, 'dollar' : 1, 'renminbi' : 2, 'pound' : 3 }
+    object_list = {'spoiled': 0, 'edible' : 1, 'hard_to_tell' : 2}
+
+    # create directory to store the image and text files
+    try:
+        os.mkdir(path_to_data)
+        print(f"Directory created here: {path_to_data}")
+    except FileExistsError as fee:
+        print(f"{path_to_data} already exists. Continuing on...")
+    except FileNotFoundError as fnfe:
+        raise fnfe("File Not found.")
 
     # Read in Labels downloaded from labelbox
     df = pd.read_csv(lbl_bxfile)
 
     total_rows = len(df.index) 
     print(f"There are a total of {total_rows} images to process.")
-    #total_rows = 500
+    #total_rows = 10
     
     for idx in range(0, total_rows):
         
