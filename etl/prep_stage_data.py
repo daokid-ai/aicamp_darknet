@@ -20,14 +20,25 @@ def set_configuration(prop_file, section_name):
     except:
         raise Exception("Could not read properties file.")
 
+
+def create_folder(folder_name):
+    try:
+        os.mkdir(folder_name)
+        print(f"Directory created here: {folder_name}")
+    except FileExistsError as fee:
+        print(f"{folder_name} already exists. Continuing ...")
+    except FileNotFoundError as fnfe:
+        raise fnfe("Path does not exist.")
+
+
 #list data from one folder and create three lists based on 80/10/10 split
 def split_datalist(path_to_train):
     train_files = sorted(os.listdir(path_to_train))
     # splits into two different lists and zips txt and jpg files
     txt_files = [file for file in train_files if file.endswith(".txt")]
-    jpg_files = [file for file in train_files if file.endswith(".jpg")]
+    img_files = [file for file in train_files if not file.endswith(".txt") ]
      # two dimensional list with only two items per slot
-    train_files = list(zip(txt_files, jpg_files))
+    train_files = list(zip(txt_files, img_files))
 
     # list 10% of the files into the test_files list and another 10% into valid_files
     train_files = [file for i, file in enumerate(train_files) if (i % 10 != 0) and ((i+1) % 10 != 0)]
@@ -56,10 +67,10 @@ def transfer_data(from_loc, to_loc, list_files):
 
 # Create text file with  list of images and relative paths.
 def create_img_list(prefix_path, path_to_data, prefix_filenm, relative_path, file_nm):
-    list_jpgs = sorted(img_file for img_file in os.listdir(path_to_data) if img_file.endswith(".jpg"))
-    list_jpgs = [os.path.join(relative_path, img_file) for img_file in list_jpgs]
+    list_imgs = sorted(img_file for img_file in os.listdir(path_to_data) if not img_file.endswith(".txt"))
+    list_imgs = [os.path.join(relative_path, img_file) for img_file in list_imgs]
     with open(os.path.join(prefix_path, prefix_filenm + file_nm), "w") as f:
-        f.write("\n".join(list_jpgs))
+        f.write("\n".join(list_imgs))
 
 
 if __name__ == '__main__':
@@ -75,6 +86,10 @@ if __name__ == '__main__':
         path_to_test = cfg.get('path_to_test')
         prefix_path = cfg.get('prefix_path')
         prefix_filenm = cfg.get('prefix_filenm')
+
+        create_folder(path_to_valid)
+        create_folder(path_to_test)
+
         # 80:10:10 :: train:valid:test
         train_files, valid_files, test_files = split_datalist(path_to_train)
       
